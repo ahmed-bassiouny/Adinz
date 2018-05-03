@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:padding="20dp"
+    android:background="@drawable/round_fill_black_small_radius"
+    android:orientation="vertical"
+    tools:context="ntamtech.adinz.view.ContactUsDialog">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Contact Us"
+        android:textColor="@color/white"
+        android:textSize="@dimen/larg"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Company Name"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/yellow"
+        android:textSize="@dimen/medium"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NTAM Tech"
+        android:textColor="@color/white"
+        android:textSize="@dimen/medium"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Phone Number"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/yellow"
+        android:textSize="@dimen/medium"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="03 123465"
+        android:textColor="@color/white"
+        android:textSize="@dimen/medium"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/yellow"
+        android:textSize="@dimen/medium"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="info@ntamtech.com"
+        android:textColor="@color/white"
+        android:textSize="@dimen/medium"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Address"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/yellow"
+        android:textSize="@dimen/medium"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="26 Abd El-Khalik Tharwat St,Louran \n Alexandria.Egypt"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:textSize="@dimen/medium"/>
+
+</LinearLayout>

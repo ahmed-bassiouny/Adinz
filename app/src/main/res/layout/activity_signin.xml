@@ -65,6 +65,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
+        android:id="@+id/ntam"
         android:textStyle="bold"
         android:text="@string/powered_by"
         android:textColor="@color/white" />
