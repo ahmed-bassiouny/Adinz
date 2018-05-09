@@ -31,6 +31,9 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         // check location permission
         getController().requestLocationPermission();
 
+        getController().createAd(5,"url","ad");
+        getController().createAd(66,"url22","ad22");
+        getController().getAd();
 
     }
 
@@ -63,6 +66,8 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        getController().requestLocationPermission();
+        getController().removeLocationListener();
+        getController().closeRealm();
     }
+
 }

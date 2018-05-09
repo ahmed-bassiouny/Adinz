@@ -10,6 +10,8 @@ import android.support.v4.content.ContextCompat;
 import com.google.android.gms.location.LocationListener;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
+import ntamtech.adinz.model.AdModel;
 import ntamtech.adinz.utils.LocationManager;
 
 /**
@@ -28,13 +30,25 @@ public class HomeController {
         this.activity = activity;
         this.locationListener = (LocationListener) activity;
         // add realm config
+        initRealmConfiguration();
+        realm = getRealm();
+    }
+
+    private void initRealmConfiguration() {
         Realm.init(activity);
     }
 
-    public Realm getRealm(){
-        if(realm == null)
+    private Realm getRealm() {
+        if (realm == null)
             realm = Realm.getDefaultInstance();
         return realm;
+    }
+
+    public void closeRealm() {
+        if (realm != null) {
+            realm.cancelTransaction();
+            realm.close();
+        }
     }
 
     // request to access location (run time permission )
@@ -44,9 +58,10 @@ public class HomeController {
         else
             initLocationManager();
     }
+
     // init my location manager
-    private void initLocationManager(){
-        locationManager = new LocationManager(activity,locationListener);
+    private void initLocationManager() {
+        locationManager = new LocationManager(activity, locationListener);
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull int[] grantResults) {
@@ -56,8 +71,21 @@ public class HomeController {
             initLocationManager();
     }
 
-    public void removeLocationListener(){
+    public void removeLocationListener() {
         locationManager.removeListener(locationListener);
+    }
+
+    public void createAd(int id, String url, String type) {
+        realm.beginTransaction();
+        AdModel mode = new AdModel(id,url,type);
+        realm.insertOrUpdate(mode);
+        realm.commitTransaction();
+    }
+    public void getAd(){
+        RealmResults<AdModel> results = realm.where(AdModel.class).findAll();
+        AdModel o =  results.get(0);
+        o.getId();
+        o.getType();
     }
 
 }
