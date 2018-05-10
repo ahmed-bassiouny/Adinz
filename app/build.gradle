@@ -36,4 +36,6 @@ dependencies {
     }
     // show hide password
     implementation 'com.github.scottyab:showhidepasswordedittext:0.8'
+    // download files
+    implementation 'com.mindorks.android:prdownloader:0.4.0'
 }

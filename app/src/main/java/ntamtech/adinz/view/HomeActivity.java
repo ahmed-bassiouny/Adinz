@@ -1,11 +1,15 @@
 package ntamtech.adinz.view;
 
+import android.Manifest;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.downloader.Error;
+import com.downloader.OnDownloadListener;
 import com.google.android.gms.location.LocationListener;
 
 import ntamtech.adinz.R;
@@ -29,11 +33,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         initView();
         onClick();
         // check location permission
-        getController().requestLocationPermission();
-
-        getController().createAd(5,"url","ad");
-        getController().createAd(66,"url22","ad22");
-        getController().getAd();
+        getController().requestPermission();
 
     }
 
