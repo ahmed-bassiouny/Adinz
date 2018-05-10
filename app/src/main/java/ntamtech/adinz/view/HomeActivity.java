@@ -2,11 +2,13 @@ package ntamtech.adinz.view;
 
 import android.Manifest;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.downloader.Error;
 import com.downloader.OnDownloadListener;
@@ -23,6 +25,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
     private final long SPLASH_TIME_OUT = 3000;
     // view
     private ImageView image;
+    private VideoView video;
 
 
     // override methods
@@ -34,7 +37,9 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         onClick();
         // check location permission
         getController().requestPermission();
-
+/*
+        video.setVideoURI(Uri.parse(getController().videoPath+"test.mp4"));
+        video.start();*/
     }
 
     @Override
@@ -61,6 +66,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
 
     private void initView() {
         image = findViewById(R.id.image);
+        video = findViewById(R.id.video);
     }
 
     @Override

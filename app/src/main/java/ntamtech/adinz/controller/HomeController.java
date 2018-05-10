@@ -34,8 +34,8 @@ public class HomeController {
     private LocationListener locationListener;
     private Realm realm;
     private String appPath = Environment.getExternalStorageDirectory() + "/Adinz/";
-    private String imagePath = appPath + "Image/";
-    private String videoPath = appPath + "Video/";
+    public String imagePath = appPath + "Image/";
+    public String videoPath = appPath + "Video/";
 
     public HomeController(Activity activity) {
         this.activity = activity;
