@@ -103,7 +103,7 @@ public class HomeController {
             return;
         locationManager.removeListener(locationListener);
     }
-
+/*
     public void createAd(int id, String url, String type) {
         realm.beginTransaction();
         AdModel mode = new AdModel(id, url, type);
@@ -116,7 +116,7 @@ public class HomeController {
         AdModel o = results.get(0);
         o.getId();
         o.getType();
-    }
+    }*/
 
     public void loadImage(String url, OnDownloadListener onDownloadListener) {
         loadFile(url, imagePath, onDownloadListener);

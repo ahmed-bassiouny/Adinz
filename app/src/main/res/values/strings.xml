@@ -5,4 +5,7 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="powered_by">Powered by NTAMTECH</string>
+    <string name="login_successfully">login successfully</string>
+    <string name="driver_code_empty">Please Enter Driver Code</string>
+    <string name="driver_password_empty">Please Enter Password</string>
 </resources>

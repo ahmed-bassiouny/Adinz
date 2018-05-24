@@ -23,6 +23,7 @@
             android:textColor="@color/white" />
 
         <EditText
+            android:id="@+id/et_driver_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -39,7 +40,8 @@
             android:text="@string/password"
             android:textColor="@color/white" />
 
-        <com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText
+        <EditText
+            android:id="@+id/et_driver_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -50,6 +52,7 @@
 
 
         <Button
+            android:id="@+id/btn_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
@@ -57,6 +60,13 @@
             android:padding="10dp"
             android:text="@string/login"
             android:textColor="@color/white" />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:visibility="gone" />
     </LinearLayout>
 
     <TextView
@@ -65,8 +75,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
-        android:id="@+id/ntam"
-        android:textStyle="bold"
         android:text="@string/powered_by"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textStyle="bold" />
 </RelativeLayout>
