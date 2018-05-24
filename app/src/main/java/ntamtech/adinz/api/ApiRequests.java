@@ -2,9 +2,12 @@ package ntamtech.adinz.api;
 
 import android.support.annotation.NonNull;
 
+import ntamtech.adinz.api.apiModel.requests.LoginRequest;
 import ntamtech.adinz.api.apiModel.response.AdResponse;
+import ntamtech.adinz.api.apiModel.response.LoginResponse;
 import ntamtech.adinz.api.apiModel.response.ParentResponse;
 import ntamtech.adinz.interfaces.BaseResponseInterface;
+import ntamtech.adinz.model.AdDriverZoneModel;
 import ntamtech.adinz.model.AdModel;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,6 +58,23 @@ public class ApiRequests {
 
             @Override
             public void onFailure(@NonNull Call<AdResponse> call, @NonNull Throwable t) {
+                // get error message
+                anInterface.onFailed(t.getLocalizedMessage());
+            }
+        });
+    }
+
+    public static void login(LoginRequest loginRequest, final BaseResponseInterface<AdDriverZoneModel> anInterface) {
+        Call<LoginResponse> response = ApiConfig.httpApiInterface.login(loginRequest);
+        response.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
+                // check on response and get data
+                checkValidResult(response, anInterface);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
                 // get error message
                 anInterface.onFailed(t.getLocalizedMessage());
             }

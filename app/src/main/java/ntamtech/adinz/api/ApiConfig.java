@@ -17,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiConfig {
     private static Retrofit retrofit;
-    private static final String baseUrl = "http://www.esameisa.com/demo/waslabank/public/api/";
+    private static final String baseUrl = "http://ntam.tech/adinz/api/";
     public static HttpApiInterface httpApiInterface;
 
 
