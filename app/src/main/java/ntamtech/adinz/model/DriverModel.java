@@ -2,12 +2,15 @@ package ntamtech.adinz.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 import ntamtech.adinz.api.apiModel.ApiKey;
 import ntamtech.adinz.utils.MyUtils;
 
-public class DriverModel {
+public class DriverModel extends RealmObject {
 
     @SerializedName(ApiKey.ID)
+    @PrimaryKey
     private String id;
     @SerializedName(ApiKey.NAME)
     private String name;

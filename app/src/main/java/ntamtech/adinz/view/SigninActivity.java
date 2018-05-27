@@ -13,6 +13,8 @@ import bassiouny.ahmed.genericmanager.SharedPrefManager;
 import ntamtech.adinz.R;
 import ntamtech.adinz.api.ApiRequests;
 import ntamtech.adinz.api.apiModel.requests.LoginRequest;
+import ntamtech.adinz.controller.HomeController;
+import ntamtech.adinz.database.DataBaseOperation;
 import ntamtech.adinz.interfaces.BaseResponseInterface;
 import ntamtech.adinz.model.AdDriverZoneModel;
 import ntamtech.adinz.model.DriverModel;
@@ -24,15 +26,16 @@ public class SigninActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private EditText etDriverCode, etDriverPassword;
     private Button btnLogin;
+    private DataBaseOperation dataBase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
         // check user is logged in
-        if (SharedPrefManager.getObject(SharedPrefKey.USER, DriverModel.class) != null){
-            startActivity(new Intent(SigninActivity.this,HomeActivity.class));
-        }else {
+        if (SharedPrefManager.getObject(SharedPrefKey.USER, DriverModel.class) != null) {
+            startActivity(new Intent(SigninActivity.this, HomeActivity.class));
+        } else {
             initView();
         }
     }
@@ -81,9 +84,13 @@ public class SigninActivity extends AppCompatActivity {
         ApiRequests.login(request, new BaseResponseInterface<AdDriverZoneModel>() {
             @Override
             public void onSuccess(AdDriverZoneModel adDriverZoneModel) {
+                //save ads and zones in databse
+                getDataBase().insertZoneListAndAdList(adDriverZoneModel);
+                // save user object in shared oref
                 SharedPrefManager.setObject(SharedPrefKey.USER, adDriverZoneModel.getDriverModel());
                 Toast.makeText(SigninActivity.this, R.string.login_successfully, Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(SigninActivity.this,HomeActivity.class));
+                // open home screen
+                startActivity(new Intent(SigninActivity.this, HomeActivity.class));
                 finish();
             }
 
@@ -93,5 +100,11 @@ public class SigninActivity extends AppCompatActivity {
                 stopLoading();
             }
         });
+    }
+
+    private DataBaseOperation getDataBase() {
+        if (dataBase == null)
+            dataBase = new DataBaseOperation();
+        return dataBase;
     }
 }

@@ -16,6 +16,7 @@ import com.google.android.gms.location.LocationListener;
 
 import ntamtech.adinz.R;
 import ntamtech.adinz.controller.HomeController;
+import ntamtech.adinz.database.DataBaseOperation;
 
 public class HomeActivity extends AppCompatActivity implements LocationListener {
 
@@ -40,6 +41,9 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
 /*
         video.setVideoURI(Uri.parse(getController().videoPath+"test.mp4"));
         video.start();*/
+        DataBaseOperation dataBaseOperation = new DataBaseOperation();
+        dataBaseOperation.getAllAds();
+        dataBaseOperation.getAllZone();
     }
 
     @Override
@@ -73,7 +77,6 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
     protected void onDestroy() {
         super.onDestroy();
         getController().removeLocationListener();
-        getController().closeRealm();
     }
 
 }

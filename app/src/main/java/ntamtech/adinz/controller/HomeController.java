@@ -29,10 +29,8 @@ public class HomeController {
 
     private LocationManager locationManager;
     private final int requestLocationPermission = 1;
-    private final int requestStoragePermission = 2;
     private Activity activity;
     private LocationListener locationListener;
-    private Realm realm;
     private String appPath = Environment.getExternalStorageDirectory() + "/Adinz/";
     public String imagePath = appPath + "Image/";
     public String videoPath = appPath + "Video/";
@@ -43,7 +41,6 @@ public class HomeController {
         // add realm config
         initRealmConfiguration();
         // create realm object
-        realm = getRealm();
         // init PRDownloader
         PRDownloader.initialize(activity);
         // create basic folder
@@ -66,17 +63,7 @@ public class HomeController {
         Realm.init(activity);
     }
 
-    private Realm getRealm() {
-        if (realm == null)
-            realm = Realm.getDefaultInstance();
-        return realm;
-    }
 
-    public void closeRealm() {
-        if (realm != null) {
-            realm.close();
-        }
-    }
 
     // request to access location , storage (run time permission )
     public void requestPermission() {
