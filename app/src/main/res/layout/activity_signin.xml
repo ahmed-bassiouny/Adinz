@@ -8,7 +8,7 @@
     tools:context="ntamtech.adinz.view.SigninActivity">
 
     <LinearLayout
-        android:layout_width="400dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:background="@drawable/border_white"
@@ -19,7 +19,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/driver_id"
+            android:text="@string/driver_email"
             android:textColor="@color/white" />
 
         <EditText
@@ -28,9 +28,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@drawable/border_white_solid"
-            android:digits="0123456789"
             android:hint="@string/type_here"
-            android:inputType="number"
+            android:inputType="textEmailAddress"
             android:padding="10dp" />
 
         <TextView

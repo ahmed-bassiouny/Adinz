@@ -9,12 +9,15 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import bassiouny.ahmed.genericmanager.SharedPrefManager;
 import ntamtech.adinz.R;
 import ntamtech.adinz.api.ApiRequests;
 import ntamtech.adinz.api.apiModel.requests.LoginRequest;
 import ntamtech.adinz.interfaces.BaseResponseInterface;
 import ntamtech.adinz.model.AdDriverZoneModel;
+import ntamtech.adinz.model.DriverModel;
 import ntamtech.adinz.utils.DummyData;
+import ntamtech.adinz.utils.SharedPrefKey;
 
 public class SigninActivity extends AppCompatActivity {
 
@@ -26,7 +29,12 @@ public class SigninActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
-        initView();
+        // check user is logged in
+        if (SharedPrefManager.getObject(SharedPrefKey.USER, DriverModel.class) != null){
+            startActivity(new Intent(SigninActivity.this,HomeActivity.class));
+        }else {
+            initView();
+        }
     }
 
     private void initView() {
@@ -73,8 +81,9 @@ public class SigninActivity extends AppCompatActivity {
         ApiRequests.login(request, new BaseResponseInterface<AdDriverZoneModel>() {
             @Override
             public void onSuccess(AdDriverZoneModel adDriverZoneModel) {
-                // todo cache data
+                SharedPrefManager.setObject(SharedPrefKey.USER, adDriverZoneModel.getDriverModel());
                 Toast.makeText(SigninActivity.this, R.string.login_successfully, Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(SigninActivity.this,HomeActivity.class));
                 finish();
             }
 

@@ -15,6 +15,6 @@ public class LoginResponse extends ParentResponse<AdDriverZoneModel> {
     public AdDriverZoneModel getObject() {
         if (model == null)
             model = new AdDriverZoneModel();
-        return null;
+        return model;
     }
 }

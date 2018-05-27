@@ -8,4 +8,5 @@
     <string name="login_successfully">login successfully</string>
     <string name="driver_code_empty">Please Enter Driver Code</string>
     <string name="driver_password_empty">Please Enter Password</string>
+    <string name="driver_email">Driver Email</string>
 </resources>

@@ -4,6 +4,7 @@ import ntamtech.adinz.api.apiModel.requests.LoginRequest;
 import ntamtech.adinz.api.apiModel.response.AdResponse;
 import ntamtech.adinz.api.apiModel.response.LoginResponse;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 /**
@@ -16,5 +17,5 @@ public interface HttpApiInterface {
     Call<AdResponse> getAd();
 
     @POST("driver_login")
-    Call<LoginResponse> login(LoginRequest loginRequest);
+    Call<LoginResponse> login(@Body LoginRequest loginRequest);
 }

@@ -2,6 +2,8 @@ package ntamtech.adinz.utils;
 
 import android.app.Application;
 
+import bassiouny.ahmed.genericmanager.SharedPrefManager;
+import ntamtech.adinz.R;
 import ntamtech.adinz.api.ApiConfig;
 
 public class MyApplication extends Application {
@@ -10,5 +12,6 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         ApiConfig.initRetrofitConfig();
+        SharedPrefManager.init(this,getString(R.string.app_name));
     }
 }
