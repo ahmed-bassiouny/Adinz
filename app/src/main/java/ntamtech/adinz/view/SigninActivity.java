@@ -84,7 +84,7 @@ public class SigninActivity extends AppCompatActivity {
         ApiRequests.login(request, new BaseResponseInterface<AdDriverZoneModel>() {
             @Override
             public void onSuccess(AdDriverZoneModel adDriverZoneModel) {
-                //save ads and zones in databse
+                //save ads and zones in database
                 getDataBase().insertZoneListAndAdList(adDriverZoneModel);
                 // save user object in shared oref
                 SharedPrefManager.setObject(SharedPrefKey.USER, adDriverZoneModel.getDriverModel());

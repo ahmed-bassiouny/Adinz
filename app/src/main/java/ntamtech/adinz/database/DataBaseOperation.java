@@ -33,4 +33,11 @@ public class DataBaseOperation {
         RealmResults<AdModel> results = realm.where(AdModel.class).findAll();
         return new ArrayList<>(results);
     }
+    public long getAllAdsCount(){
+        return realm.where(AdModel.class).count();
+    }
+    public List<AdModel> getAllAdsBetweenTwoIds(long id1,long id2){
+        RealmResults<AdModel> results = realm.where(AdModel.class).between("id",id1,id2).findAll();
+        return new ArrayList<>(results);
+    }
 }

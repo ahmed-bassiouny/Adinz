@@ -34,6 +34,8 @@ public class HomeController {
     private String appPath = Environment.getExternalStorageDirectory() + "/Adinz/";
     public String imagePath = appPath + "Image/";
     public String videoPath = appPath + "Video/";
+    public final int ADS_LIMIT_PER_SELECT = 20;
+    public int startAdIndex = 0;
 
     public HomeController(Activity activity) {
         this.activity = activity;
@@ -118,9 +120,5 @@ public class HomeController {
                 .build()
                 .start(onDownloadListener);
     }
-
-   /* private String getFileNameFromUrl(String url) {
-        return "";
-    }*/
 
 }

@@ -8,6 +8,7 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 import ntamtech.adinz.api.apiModel.ApiKey;
+import ntamtech.adinz.utils.MyUtils;
 
 /**
  * Created by bassiouny on 24/04/18.
@@ -17,7 +18,7 @@ public class AdModel extends RealmObject {
 
     @PrimaryKey
     @SerializedName(ApiKey.ID)
-    private String id;
+    private int id;
     @SerializedName(ApiKey.NAME)
     private String name;
     @SerializedName(ApiKey.DESCRIPTION)
@@ -25,13 +26,23 @@ public class AdModel extends RealmObject {
     @SerializedName(ApiKey.PRICE)
     private String price;
     @SerializedName(ApiKey.START_DATE)
-    private String start_date;
+    private String startDate;
     @SerializedName(ApiKey.END_DATE)
-    private String end_date;
+    private String endDate;
     @SerializedName(ApiKey.TYPE_ID)
-    private String type_id;
+    private String typeId;
     @SerializedName(ApiKey.URL)
     private String adUrl;
 
+    public int getTypeId() {
+        try {
+            return Integer.parseInt(MyUtils.getString(typeId));
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 
+    public String getAdUrl() {
+        return MyUtils.getString(adUrl);
+    }
 }
