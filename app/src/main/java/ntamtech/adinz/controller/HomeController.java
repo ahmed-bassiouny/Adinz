@@ -39,7 +39,6 @@ public class HomeController {
 
     public HomeController(Activity activity) {
         this.activity = activity;
-        this.locationListener = (LocationListener) activity;
         // add realm config
         initRealmConfiguration();
         // create realm object
@@ -77,6 +76,7 @@ public class HomeController {
 
     // init my location manager
     private void initLocationManager() {
+        this.locationListener = (LocationListener) activity;
         locationManager = new LocationManager(activity, locationListener);
     }
 
@@ -107,15 +107,7 @@ public class HomeController {
         o.getType();
     }*/
 
-    public void loadImage(String url, OnDownloadListener onDownloadListener) {
-        loadFile(url, imagePath, onDownloadListener);
-    }
-
-    public void loadVideo(String url, OnDownloadListener onDownloadListener) {
-        loadFile(url, videoPath, onDownloadListener);
-    }
-
-    private void loadFile(String url, String dirPath, OnDownloadListener onDownloadListener) {
+    public void loadFile(String url, String dirPath, OnDownloadListener onDownloadListener) {
         PRDownloader.download(url, dirPath, URLUtil.guessFileName(url, null, null))
                 .build()
                 .start(onDownloadListener);

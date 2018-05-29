@@ -34,7 +34,7 @@ public class SigninActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signin);
         // check user is logged in
         if (SharedPrefManager.getObject(SharedPrefKey.USER, DriverModel.class) != null) {
-            startActivity(new Intent(SigninActivity.this, HomeActivity.class));
+            startActivity(new Intent(SigninActivity.this, SyncActivity.class));
         } else {
             initView();
         }
@@ -90,7 +90,7 @@ public class SigninActivity extends AppCompatActivity {
                 SharedPrefManager.setObject(SharedPrefKey.USER, adDriverZoneModel.getDriverModel());
                 Toast.makeText(SigninActivity.this, R.string.login_successfully, Toast.LENGTH_SHORT).show();
                 // open home screen
-                startActivity(new Intent(SigninActivity.this, HomeActivity.class));
+                startActivity(new Intent(SigninActivity.this, SyncActivity.class));
                 finish();
             }
 
