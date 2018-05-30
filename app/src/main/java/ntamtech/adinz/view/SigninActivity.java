@@ -34,7 +34,7 @@ public class SigninActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signin);
         // check user is logged in
         if (SharedPrefManager.getObject(SharedPrefKey.USER, DriverModel.class) != null) {
-            startActivity(new Intent(SigninActivity.this, SyncActivity.class));
+            startActivity(new Intent(SigninActivity.this, HomeActivity.class));
         } else {
             initView();
         }

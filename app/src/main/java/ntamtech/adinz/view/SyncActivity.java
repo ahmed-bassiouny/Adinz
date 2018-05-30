@@ -36,6 +36,12 @@ public class SyncActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sync);
         homeController = new HomeController(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_DENIED || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
@@ -43,6 +49,7 @@ public class SyncActivity extends AppCompatActivity {
         else
             syncData();
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -57,13 +64,14 @@ public class SyncActivity extends AppCompatActivity {
         ads = baseOperation.getAllAds();
         adsSize = ads.size();
         downloadFile();
-        // open home
     }
 
     private void downloadFile() {
         if(iteration >= adsSize) {
             Toast.makeText(this, "Sync Finished", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this,HomeActivity.class));
+            finish();
+            return;
         }
         AdModel item = ads.get(iteration);
         // get image file
@@ -76,6 +84,8 @@ public class SyncActivity extends AppCompatActivity {
         }else if(item.getTypeId() == Constant.VIDEO_AD) {
             path = homeController.videoPath;
         }else {
+            iteration++;
+            downloadFile();
             return;
         }
         File file = new File(path+fileName);
@@ -93,6 +103,10 @@ public class SyncActivity extends AppCompatActivity {
                     downloadFile();
                 }
             });
+        }else {
+            // file exsited so i will search second file
+            iteration++;
+            downloadFile();
         }
     }
 }

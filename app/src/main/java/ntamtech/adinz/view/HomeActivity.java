@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
@@ -19,7 +20,10 @@ import com.downloader.OnDownloadListener;
 import com.google.android.gms.location.LocationListener;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import ntamtech.adinz.R;
 import ntamtech.adinz.controller.HomeController;
@@ -35,6 +39,8 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
     private Location location;
     private DataBaseOperation dataBaseOperation;
     private List<AdModel> adModels;
+    private int adsSize = 0;
+    private int iteration = 0;
     // view
     private ImageView image;
     private VideoView video;
@@ -52,39 +58,50 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
     /*
             video.setVideoURI(Uri.parse(getController().videoPath+"test.mp4"));
             video.start();*/
-        getAdsFromDB();
+        adModels = getAdsFromDB();
+        adsSize = adModels.size();
         playAds();
     }
 
     private void playAds() {
-        int size = adModels.size();
-        // iterator on all ads
-        for (int i = 0; i < size; i++) {
-            String fileName = URLUtil.guessFileName(adModels.get(i).getAdUrl(), null, null);
-            if (adModels.get(i).getTypeId() == Constant.IMAGE_AD) {
+        if (iteration >= adsSize) {
+            iteration = 0;
+        }
+            AdModel item = adModels.get(iteration);
+            String fileName = URLUtil.guessFileName(item.getAdUrl(), null, null);
+            if (item.getTypeId() == Constant.IMAGE_AD) {
                 // image ad
                 /*Bitmap myBitmap = BitmapFactory.decodeFile(new File(getController().imagePath + fileName).getAbsolutePath());
                 image.setImageBitmap(myBitmap);*/
                 image.setImageURI(Uri.parse(getController().imagePath + fileName));
                 video.setVisibility(View.GONE);
                 image.setVisibility(View.VISIBLE);
-                stopAppForSeconds(30);
-            } else if (adModels.get(i).getTypeId() == Constant.VIDEO_AD) {
+                stopAppForSeconds();
+            } else if (item.getTypeId() == Constant.VIDEO_AD) {
                 // video ad
                 video.setVideoURI(Uri.parse(getController().videoPath + fileName));
                 video.setVisibility(View.VISIBLE);
+                video.start();
                 image.setVisibility(View.GONE);
-                stopAppForSeconds(30);
+                stopAppForSeconds();
             }
-        }
+
+
     }
 
-    private void stopAppForSeconds(final int second) {
+    private void stopAppForSeconds() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(second * 000);
+                    Thread.sleep(5000);
+                    iteration++;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            playAds();
+                        }
+                    });
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
