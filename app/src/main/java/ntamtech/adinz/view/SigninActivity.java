@@ -18,6 +18,7 @@ import ntamtech.adinz.database.DataBaseOperation;
 import ntamtech.adinz.interfaces.BaseResponseInterface;
 import ntamtech.adinz.model.AdDriverZoneModel;
 import ntamtech.adinz.model.DriverModel;
+import ntamtech.adinz.service.SyncService;
 import ntamtech.adinz.utils.DummyData;
 import ntamtech.adinz.utils.SharedPrefKey;
 
@@ -32,6 +33,7 @@ public class SigninActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
+
         // check user is logged in
         if (SharedPrefManager.getObject(SharedPrefKey.USER, DriverModel.class) != null) {
             startActivity(new Intent(SigninActivity.this, HomeActivity.class));

@@ -1,6 +1,7 @@
 package ntamtech.adinz.view;
 
 import android.Manifest;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -28,6 +29,7 @@ import java.util.TimerTask;
 import ntamtech.adinz.R;
 import ntamtech.adinz.controller.HomeController;
 import ntamtech.adinz.database.DataBaseOperation;
+import ntamtech.adinz.interfaces.CompleteInterface;
 import ntamtech.adinz.model.AdModel;
 import ntamtech.adinz.model.ZoneModel;
 import ntamtech.adinz.utils.Constant;
@@ -42,7 +44,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
     private int adsSize = 0;
     private int iteration = 0;
     // view
-    private ImageView image;
+    private ImageView image,logo;
     private VideoView video;
 
 
@@ -140,6 +142,13 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
     private void initView() {
         image = findViewById(R.id.image);
         video = findViewById(R.id.video);
+        logo = findViewById(R.id.logo);
+        logo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(HomeActivity.this,ContactUsDialog.class));
+            }
+        });
     }
 
     @Override
@@ -154,4 +163,5 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         getController().startAdIndex = getController().startAdIndex + getController().ADS_LIMIT_PER_SELECT;
         return result;
     }
+
 }

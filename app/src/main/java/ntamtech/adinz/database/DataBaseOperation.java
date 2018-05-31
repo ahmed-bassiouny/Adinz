@@ -20,6 +20,8 @@ public class DataBaseOperation {
     // save all of ads and zones in database
     public void insertZoneListAndAdList(AdDriverZoneModel adDriverZoneModel) {
         realm.beginTransaction();
+        RealmResults<AdModel> rows = realm.where(AdModel.class).findAll();
+        rows.deleteAllFromRealm();
         realm.insertOrUpdate(adDriverZoneModel.getZoneModels());
         realm.insertOrUpdate(adDriverZoneModel.getAdModels());
         realm.commitTransaction();
