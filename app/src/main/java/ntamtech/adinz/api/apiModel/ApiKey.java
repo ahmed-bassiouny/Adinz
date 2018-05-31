@@ -32,4 +32,11 @@ public class ApiKey {
     public static final String ADS_INFO = "ads_data";
     public static final String DRIVER_INFO = "driver_data";
     public static final String PASSWORD = "password";
+    public static final String CREATE_AT = "created_at";
+    public static final String ZONE_ID = "zone_id";
+    public static final String ADVERTISEMENT = "advertisment_id";
+    public static final String TRACK_DRIVER = "track_driver";
+    public static final String AD_DRIVER= "ad_driver";
+
+    public static final String UPDATED_AT = "updated_at";
 }

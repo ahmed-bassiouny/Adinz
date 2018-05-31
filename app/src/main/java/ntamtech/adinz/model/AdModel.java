@@ -45,4 +45,8 @@ public class AdModel extends RealmObject {
     public String getAdUrl() {
         return MyUtils.getString(adUrl);
     }
+
+    public int getId() {
+        return id;
+    }
 }

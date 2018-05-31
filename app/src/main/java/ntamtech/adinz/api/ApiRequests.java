@@ -2,6 +2,9 @@ package ntamtech.adinz.api;
 
 import android.support.annotation.NonNull;
 
+import java.util.List;
+
+import ntamtech.adinz.api.apiModel.requests.AdsViewRequest;
 import ntamtech.adinz.api.apiModel.requests.LoginRequest;
 import ntamtech.adinz.api.apiModel.response.AdResponse;
 import ntamtech.adinz.api.apiModel.response.LoginResponse;
@@ -47,8 +50,8 @@ public class ApiRequests {
         }
     }
 
-    public static void getAd(final BaseResponseInterface<AdModel> anInterface) {
-        Call<AdResponse> response = ApiConfig.httpApiInterface.getAd();
+    public static void syncAds(AdsViewRequest adsViewRequest, final BaseResponseInterface<List<AdModel>> anInterface) {
+        Call<AdResponse> response = ApiConfig.httpApiInterface.syncAds(adsViewRequest);
         response.enqueue(new Callback<AdResponse>() {
             @Override
             public void onResponse(@NonNull Call<AdResponse> call, @NonNull Response<AdResponse> response) {
@@ -80,4 +83,5 @@ public class ApiRequests {
             }
         });
     }
+
 }

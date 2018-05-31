@@ -7,6 +7,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import ntamtech.adinz.model.AdDriverZoneModel;
 import ntamtech.adinz.model.AdModel;
+import ntamtech.adinz.model.DriverAdModel;
 import ntamtech.adinz.model.ZoneModel;
 
 public class DataBaseOperation {
@@ -35,11 +36,27 @@ public class DataBaseOperation {
         RealmResults<AdModel> results = realm.where(AdModel.class).findAll();
         return new ArrayList<>(results);
     }
-    public long getAllAdsCount(){
-        return realm.where(AdModel.class).count();
+    public List<DriverAdModel> getAllDriverAdModel(){
+        RealmResults<DriverAdModel> results = realm.where(DriverAdModel.class).findAll();
+        return new ArrayList<>(results);
     }
+    public void removeAllDriverAdModel(){
+        realm.beginTransaction();
+        RealmResults<DriverAdModel> results = realm.where(DriverAdModel.class).findAll();
+        results.deleteAllFromRealm();
+        realm.commitTransaction();
+        realm.close();
+    }
+
     public List<AdModel> getAllAdsBetweenTwoIds(long id1,long id2){
         RealmResults<AdModel> results = realm.where(AdModel.class).between("id",id1,id2).findAll();
         return new ArrayList<>(results);
+    }
+
+    public void insertOrUpdateDriverAdModel(DriverAdModel driverAdModel) {
+        realm.beginTransaction();
+        realm.insertOrUpdate(driverAdModel);
+        realm.commitTransaction();
+        realm.close();
     }
 }

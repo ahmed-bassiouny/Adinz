@@ -26,13 +26,18 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import bassiouny.ahmed.genericmanager.SharedPrefManager;
 import ntamtech.adinz.R;
 import ntamtech.adinz.controller.HomeController;
 import ntamtech.adinz.database.DataBaseOperation;
 import ntamtech.adinz.interfaces.CompleteInterface;
 import ntamtech.adinz.model.AdModel;
+import ntamtech.adinz.model.DriverAdModel;
+import ntamtech.adinz.model.DriverModel;
 import ntamtech.adinz.model.ZoneModel;
 import ntamtech.adinz.utils.Constant;
+import ntamtech.adinz.utils.MyUtils;
+import ntamtech.adinz.utils.SharedPrefKey;
 
 public class HomeActivity extends AppCompatActivity implements LocationListener {
 
@@ -43,8 +48,9 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
     private List<AdModel> adModels;
     private int adsSize = 0;
     private int iteration = 0;
+    private int driverId = 0;
     // view
-    private ImageView image,logo;
+    private ImageView image, logo;
     private VideoView video;
 
 
@@ -62,6 +68,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
             video.start();*/
         adModels = getAdsFromDB();
         adsSize = adModels.size();
+        driverId = SharedPrefManager.getObject(SharedPrefKey.USER, DriverModel.class).getId();
         playAds();
     }
 
@@ -69,26 +76,41 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         if (iteration >= adsSize) {
             iteration = 0;
         }
-            AdModel item = adModels.get(iteration);
-            String fileName = URLUtil.guessFileName(item.getAdUrl(), null, null);
-            if (item.getTypeId() == Constant.IMAGE_AD) {
-                // image ad
+        AdModel item = adModels.get(iteration);
+        String fileName = URLUtil.guessFileName(item.getAdUrl(), null, null);
+        if (item.getTypeId() == Constant.IMAGE_AD) {
+            // image ad
                 /*Bitmap myBitmap = BitmapFactory.decodeFile(new File(getController().imagePath + fileName).getAbsolutePath());
                 image.setImageBitmap(myBitmap);*/
-                image.setImageURI(Uri.parse(getController().imagePath + fileName));
-                video.setVisibility(View.GONE);
-                image.setVisibility(View.VISIBLE);
-                stopAppForSeconds();
-            } else if (item.getTypeId() == Constant.VIDEO_AD) {
-                // video ad
-                video.setVideoURI(Uri.parse(getController().videoPath + fileName));
-                video.setVisibility(View.VISIBLE);
-                video.start();
-                image.setVisibility(View.GONE);
-                stopAppForSeconds();
-            }
+            image.setImageURI(Uri.parse(getController().imagePath + fileName));
+            video.setVisibility(View.GONE);
+            image.setVisibility(View.VISIBLE);
+            stopAppForSeconds();
+        } else if (item.getTypeId() == Constant.VIDEO_AD) {
+            // video ad
+            video.setVideoURI(Uri.parse(getController().videoPath + fileName));
+            video.setVisibility(View.VISIBLE);
+            video.start();
+            image.setVisibility(View.GONE);
+            stopAppForSeconds();
+        }
+        viewAd(item.getId());
 
+    }
 
+    private void viewAd(int adId) {
+        // save ad in database
+        // send later to web service
+        DriverAdModel driverAdModel = new DriverAdModel();
+        driverAdModel.setAdvertisementId(adId);
+        driverAdModel.setCreatedAt(MyUtils.getCurrentDateTime());
+        driverAdModel.setLatitude(location.getLatitude());
+        driverAdModel.setLongitude(location.getLongitude());
+        driverAdModel.setDriverId(driverId);
+        // todo make zone id static till talk with aya
+        driverAdModel.setZonId(1);
+        // insert in database
+        getDataBaseOperation().insertOrUpdateDriverAdModel(driverAdModel);
     }
 
     private void stopAppForSeconds() {
@@ -146,7 +168,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         logo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this,ContactUsDialog.class));
+                startActivity(new Intent(HomeActivity.this, ContactUsDialog.class));
             }
         });
     }

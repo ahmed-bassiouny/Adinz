@@ -1,5 +1,6 @@
 package ntamtech.adinz.interfaces;
 
+import ntamtech.adinz.api.apiModel.requests.AdsViewRequest;
 import ntamtech.adinz.api.apiModel.requests.LoginRequest;
 import ntamtech.adinz.api.apiModel.response.AdResponse;
 import ntamtech.adinz.api.apiModel.response.LoginResponse;
@@ -18,4 +19,8 @@ public interface HttpApiInterface {
 
     @POST("driver_login")
     Call<LoginResponse> login(@Body LoginRequest loginRequest);
+
+
+    @POST("advertisment")
+    Call<AdResponse> syncAds(@Body AdsViewRequest adsViewRequest);
 }
