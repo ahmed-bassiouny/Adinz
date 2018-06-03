@@ -7,8 +7,6 @@ import io.realm.annotations.PrimaryKey;
 import ntamtech.adinz.api.apiModel.ApiKey;
 
 public class DriverAdModel extends RealmObject {
-    @PrimaryKey
-    private int id;
     @SerializedName(ApiKey.ADVERTISEMENT)
     private int advertisementId;
     @SerializedName(ApiKey.DRIVER_ID)

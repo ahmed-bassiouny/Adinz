@@ -18,7 +18,6 @@ import ntamtech.adinz.database.DataBaseOperation;
 import ntamtech.adinz.interfaces.BaseResponseInterface;
 import ntamtech.adinz.model.AdDriverZoneModel;
 import ntamtech.adinz.model.DriverModel;
-import ntamtech.adinz.service.SyncService;
 import ntamtech.adinz.utils.DummyData;
 import ntamtech.adinz.utils.SharedPrefKey;
 

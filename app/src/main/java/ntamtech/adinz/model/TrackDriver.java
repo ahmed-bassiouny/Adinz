@@ -9,12 +9,12 @@ import ntamtech.adinz.api.apiModel.ApiKey;
 
 public class TrackDriver {
 
-    @SerializedName(ApiKey.AD_DRIVER)
+    /*@SerializedName(ApiKey.AD_DRIVER)
     private List<DriverAdModel> adModels;
 
     public TrackDriver(List<DriverAdModel> adModels) {
         if(adModels == null)
             adModels = new ArrayList<>();
         this.adModels = adModels;
-    }
+    }*/
 }

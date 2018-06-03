@@ -28,13 +28,17 @@ import java.util.TimerTask;
 
 import bassiouny.ahmed.genericmanager.SharedPrefManager;
 import ntamtech.adinz.R;
+import ntamtech.adinz.api.ApiRequests;
+import ntamtech.adinz.api.apiModel.requests.AdsViewRequest;
 import ntamtech.adinz.controller.HomeController;
 import ntamtech.adinz.database.DataBaseOperation;
+import ntamtech.adinz.interfaces.BaseResponseInterface;
 import ntamtech.adinz.interfaces.CompleteInterface;
 import ntamtech.adinz.model.AdModel;
 import ntamtech.adinz.model.DriverAdModel;
 import ntamtech.adinz.model.DriverModel;
 import ntamtech.adinz.model.ZoneModel;
+import ntamtech.adinz.service.SyncService;
 import ntamtech.adinz.utils.Constant;
 import ntamtech.adinz.utils.MyUtils;
 import ntamtech.adinz.utils.SharedPrefKey;
@@ -49,6 +53,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
     private int adsSize = 0;
     private int iteration = 0;
     private int driverId = 0;
+    private boolean findLocation = false;
     // view
     private ImageView image, logo;
     private VideoView video;
@@ -69,7 +74,27 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         adModels = getAdsFromDB();
         adsSize = adModels.size();
         driverId = SharedPrefManager.getObject(SharedPrefKey.USER, DriverModel.class).getId();
-        playAds();
+        //startService(new Intent(HomeActivity.this, SyncService.class));
+        load();
+    }
+
+    private void load() {
+        DataBaseOperation dataBaseOperation = new DataBaseOperation();
+        AdsViewRequest adsViewRequest = new AdsViewRequest(
+                MyUtils.getCurrentDateTime(),
+                dataBaseOperation.getAllDriverAdModel());
+        ApiRequests.syncAds(adsViewRequest, new BaseResponseInterface<List<AdModel>>() {
+            @Override
+            public void onSuccess(List<AdModel> adModels) {
+                // todo save new ads
+                // todo remove driver ads
+            }
+
+            @Override
+            public void onFailed(String errorMessage) {
+
+            }
+        });
     }
 
     private void playAds() {
@@ -110,7 +135,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         // todo make zone id static till talk with aya
         driverAdModel.setZonId(1);
         // insert in database
-        getDataBaseOperation().insertOrUpdateDriverAdModel(driverAdModel);
+        getDataBaseOperation().insertDriverAdModel(driverAdModel);
     }
 
     private void stopAppForSeconds() {
@@ -136,6 +161,10 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onLocationChanged(Location location) {
         this.location = location;
+        if(!findLocation){
+            playAds();
+            findLocation = true;
+        }
     }
 
     @Override

@@ -2,6 +2,8 @@ package ntamtech.adinz.api;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
+
 import java.util.List;
 
 import ntamtech.adinz.api.apiModel.requests.AdsViewRequest;
@@ -50,7 +52,8 @@ public class ApiRequests {
         }
     }
 
-    public static void syncAds(AdsViewRequest adsViewRequest, final BaseResponseInterface<List<AdModel>> anInterface) {
+    public static void syncAds(final AdsViewRequest adsViewRequest, final BaseResponseInterface<List<AdModel>> anInterface) {
+        String item = new Gson().toJson(adsViewRequest.getAdModels());
         Call<AdResponse> response = ApiConfig.httpApiInterface.syncAds(adsViewRequest);
         response.enqueue(new Callback<AdResponse>() {
             @Override

@@ -53,9 +53,9 @@ public class DataBaseOperation {
         return new ArrayList<>(results);
     }
 
-    public void insertOrUpdateDriverAdModel(DriverAdModel driverAdModel) {
+    public void insertDriverAdModel(DriverAdModel driverAdModel) {
         realm.beginTransaction();
-        realm.insertOrUpdate(driverAdModel);
+        realm.insert(driverAdModel);
         realm.commitTransaction();
         realm.close();
     }
