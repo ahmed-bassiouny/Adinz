@@ -2,6 +2,7 @@ package ntamtech.adinz.controller;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -44,6 +45,27 @@ public class HomeController {
         // create realm object
         // init PRDownloader
         PRDownloader.initialize(activity);
+        // create basic folder
+        File appFile = new File(appPath);
+        File imageFile = new File(imagePath);
+        File videoFile = new File(videoPath);
+
+        if (!appFile.exists()) {
+            appFile.mkdir();
+        }
+        if (!imageFile.exists()) {
+            imageFile.mkdir();
+        }
+        if (!videoFile.exists()) {
+            videoFile.mkdir();
+        }
+    }
+    public HomeController(Context context) {
+        // add realm config
+        initRealmConfiguration();
+        // create realm object
+        // init PRDownloader
+        PRDownloader.initialize(context);
         // create basic folder
         File appFile = new File(appPath);
         File imageFile = new File(imagePath);

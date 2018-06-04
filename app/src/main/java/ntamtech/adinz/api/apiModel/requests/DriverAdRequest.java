@@ -1,14 +1,10 @@
-package ntamtech.adinz.model;
+package ntamtech.adinz.api.apiModel.requests;
 
 import com.google.gson.annotations.SerializedName;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 import ntamtech.adinz.api.apiModel.ApiKey;
 
-public class DriverAdModel extends RealmObject {
-    @PrimaryKey
-    private long id;
+public class DriverAdRequest {
     @SerializedName(ApiKey.ADVERTISEMENT)
     private int advertisementId;
     @SerializedName(ApiKey.DRIVER_ID)
@@ -46,35 +42,15 @@ public class DriverAdModel extends RealmObject {
         this.createdAt = createdAt;
     }
 
-    public int getAdvertisementId() {
-        return advertisementId;
+    public DriverAdRequest(int advertisementId, int driverId, double latitude, double longitude, int zonId, String createdAt) {
+        this.advertisementId = advertisementId;
+        this.driverId = driverId;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.zonId = zonId;
+        this.createdAt = createdAt;
     }
 
-    public int getDriverId() {
-        return driverId;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public int getZonId() {
-        return zonId;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+    public DriverAdRequest() {
     }
 }

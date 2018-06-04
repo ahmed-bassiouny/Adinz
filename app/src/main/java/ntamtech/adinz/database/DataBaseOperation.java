@@ -9,6 +9,7 @@ import ntamtech.adinz.model.AdDriverZoneModel;
 import ntamtech.adinz.model.AdModel;
 import ntamtech.adinz.model.DriverAdModel;
 import ntamtech.adinz.model.ZoneModel;
+import ntamtech.adinz.service.SyncService;
 
 public class DataBaseOperation {
 
@@ -26,37 +27,64 @@ public class DataBaseOperation {
         realm.insertOrUpdate(adDriverZoneModel.getZoneModels());
         realm.insertOrUpdate(adDriverZoneModel.getAdModels());
         realm.commitTransaction();
-        realm.close();
     }
-    public List<ZoneModel> getAllZone(){
-        RealmResults<ZoneModel> results = realm.where(ZoneModel.class).findAll();
-        return new ArrayList<>(results);
-    }
-    public List<AdModel> getAllAds(){
-        RealmResults<AdModel> results = realm.where(AdModel.class).findAll();
-        return new ArrayList<>(results);
-    }
-    public List<DriverAdModel> getAllDriverAdModel(){
-        RealmResults<DriverAdModel> results = realm.where(DriverAdModel.class).findAll();
-        return new ArrayList<>(results);
-    }
-    public void removeAllDriverAdModel(){
+
+    // save all of ads and zones in database
+    public void insertAdList(List<AdModel> adModels) {
         realm.beginTransaction();
-        RealmResults<DriverAdModel> results = realm.where(DriverAdModel.class).findAll();
-        results.deleteAllFromRealm();
+        realm.insertOrUpdate(adModels);
         realm.commitTransaction();
         realm.close();
     }
 
-    public List<AdModel> getAllAdsBetweenTwoIds(long id1,long id2){
-        RealmResults<AdModel> results = realm.where(AdModel.class).between("id",id1,id2).findAll();
+    public List<ZoneModel> getAllZone() {
+        RealmResults<ZoneModel> results = realm.where(ZoneModel.class).findAll();
+        return new ArrayList<>(results);
+    }
+
+    public List<AdModel> getAllAds() {
+        RealmResults<AdModel> results = realm.where(AdModel.class).findAll();
+        return new ArrayList<>(results);
+    }
+
+    public List<DriverAdModel> getAllDriverAdModelLimit() {
+        RealmResults<DriverAdModel> results = realm.where(DriverAdModel.class).findAll();
+        if (results.size() > SyncService.SYNC_PER_COUNT)
+            return results.subList(0, SyncService.SYNC_PER_COUNT);
+        else
+            return results.subList(0, results.size());
+        //return new ArrayList<>(results);
+    }
+
+    public void removeAllDriverAdModel(long startId) {
+        long endId = startId + SyncService.SYNC_PER_COUNT;
+        realm.beginTransaction();
+        RealmResults<DriverAdModel> results = realm.where(DriverAdModel.class)
+                .between("id", startId, endId).findAll();
+        results.deleteAllFromRealm();
+        realm.commitTransaction();
+    }
+
+    public List<AdModel> getAllAdsBetweenTwoIds(long id1, long id2) {
+        RealmResults<AdModel> results = realm.where(AdModel.class).between("id", id1, id2).findAll();
         return new ArrayList<>(results);
     }
 
     public void insertDriverAdModel(DriverAdModel driverAdModel) {
-        realm.beginTransaction();
-        realm.insert(driverAdModel);
+        if (!realm.isInTransaction())
+            realm.beginTransaction();
+        Number number = realm.where(DriverAdModel.class).max("id");
+        if (number != null){
+            long autoIncrementId = number.longValue();
+            autoIncrementId++;
+            driverAdModel.setId(autoIncrementId);
+        }
+        realm.copyToRealm(driverAdModel);
         realm.commitTransaction();
-        realm.close();
     }
+
+    public int getDriverAdModelSize() {
+        return realm.where(DriverAdModel.class).findAll().size();
+    }
+
 }

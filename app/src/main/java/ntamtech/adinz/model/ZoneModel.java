@@ -19,6 +19,9 @@ public class ZoneModel extends RealmObject {
     private String lat;
     @SerializedName(ApiKey.LNG)
     private String lng;
+
+
+
     @SerializedName(ApiKey.CITY_ID)
     private String cityId;
 

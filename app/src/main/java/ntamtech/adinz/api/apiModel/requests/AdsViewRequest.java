@@ -16,9 +16,9 @@ public class AdsViewRequest {
     @SerializedName(ApiKey.UPDATED_AT)
     private String date;
     @SerializedName(ApiKey.TRACK_DRIVER)
-    private List<DriverAdModel> adModels;
+    private List<DriverAdRequest> adModels;
 
-    public AdsViewRequest(String date,List<DriverAdModel> adModels) {
+    public AdsViewRequest(String date,List<DriverAdRequest> adModels) {
         this.adModels = adModels;
         this.date = date;
     }
@@ -27,7 +27,7 @@ public class AdsViewRequest {
         return date;
     }
 
-    public List<DriverAdModel> getAdModels() {
+    public List<DriverAdRequest> getAdModels() {
         return adModels;
     }
 

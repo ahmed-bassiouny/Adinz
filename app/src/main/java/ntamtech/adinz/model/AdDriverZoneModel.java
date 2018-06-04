@@ -11,8 +11,10 @@ public class AdDriverZoneModel {
 
     @SerializedName(ApiKey.DRIVER_INFO)
     private DriverModel driverModel;
+
     @SerializedName(ApiKey.ADS_INFO)
     private List<AdModel> adModels;
+
     @SerializedName(ApiKey.ZONES_INFO)
     private List<ZoneModel> zoneModels;
 

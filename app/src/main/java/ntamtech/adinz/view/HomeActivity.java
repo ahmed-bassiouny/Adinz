@@ -21,6 +21,7 @@ import com.downloader.OnDownloadListener;
 import com.google.android.gms.location.LocationListener;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Timer;
@@ -30,6 +31,7 @@ import bassiouny.ahmed.genericmanager.SharedPrefManager;
 import ntamtech.adinz.R;
 import ntamtech.adinz.api.ApiRequests;
 import ntamtech.adinz.api.apiModel.requests.AdsViewRequest;
+import ntamtech.adinz.api.apiModel.requests.DriverAdRequest;
 import ntamtech.adinz.controller.HomeController;
 import ntamtech.adinz.database.DataBaseOperation;
 import ntamtech.adinz.interfaces.BaseResponseInterface;
@@ -74,27 +76,34 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         adModels = getAdsFromDB();
         adsSize = adModels.size();
         driverId = SharedPrefManager.getObject(SharedPrefKey.USER, DriverModel.class).getId();
-        //startService(new Intent(HomeActivity.this, SyncService.class));
-        load();
+        startService(new Intent(HomeActivity.this, SyncService.class));
+        //load();
     }
 
     private void load() {
-        DataBaseOperation dataBaseOperation = new DataBaseOperation();
-        AdsViewRequest adsViewRequest = new AdsViewRequest(
+        if(getDataBaseOperation().getDriverAdModelSize() < 2)
+            return;
+        final List<DriverAdModel> driverAdModels = dataBaseOperation.getAllDriverAdModelLimit();
+        List<DriverAdRequest> driverAdRequests = new ArrayList<>();
+        for(DriverAdModel item : driverAdModels){
+            driverAdRequests.add(new DriverAdRequest(item.getAdvertisementId(),item.getDriverId(),item.getLatitude(),
+                    item.getLongitude(),item.getZonId(),item.getCreatedAt()));
+        }
+        /*AdsViewRequest adsViewRequest = new AdsViewRequest(
                 MyUtils.getCurrentDateTime(),
-                dataBaseOperation.getAllDriverAdModel());
+                driverAdRequests);
         ApiRequests.syncAds(adsViewRequest, new BaseResponseInterface<List<AdModel>>() {
             @Override
             public void onSuccess(List<AdModel> adModels) {
-                // todo save new ads
-                // todo remove driver ads
+                getDataBaseOperation().insertAdList(adModels);
+                getDataBaseOperation().deleteDriverAdsModel();
             }
 
             @Override
             public void onFailed(String errorMessage) {
 
             }
-        });
+        });*/
     }
 
     private void playAds() {
@@ -143,7 +152,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
             @Override
             public void run() {
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(10000);
                     iteration++;
                     runOnUiThread(new Runnable() {
                         @Override
