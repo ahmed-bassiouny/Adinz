@@ -5,11 +5,11 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import ntamtech.adinz.controller.HomeController;
 import ntamtech.adinz.model.AdDriverZoneModel;
 import ntamtech.adinz.model.AdModel;
 import ntamtech.adinz.model.DriverAdModel;
 import ntamtech.adinz.model.ZoneModel;
-import ntamtech.adinz.service.SyncService;
 
 public class DataBaseOperation {
 
@@ -30,11 +30,16 @@ public class DataBaseOperation {
     }
 
     // save all of ads and zones in database
-    public void insertAdList(List<AdModel> adModels) {
-        realm.beginTransaction();
-        realm.insertOrUpdate(adModels);
-        realm.commitTransaction();
-        realm.close();
+    public void insertAdList(final List<AdModel> adModels) {
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.beginTransaction();
+                realm.insert(adModels);
+                realm.commitTransaction();
+                realm.close();
+            }
+        });
     }
 
     public List<ZoneModel> getAllZone() {
@@ -49,15 +54,15 @@ public class DataBaseOperation {
 
     public List<DriverAdModel> getAllDriverAdModelLimit() {
         RealmResults<DriverAdModel> results = realm.where(DriverAdModel.class).findAll();
-        if (results.size() > SyncService.SYNC_PER_COUNT)
-            return results.subList(0, SyncService.SYNC_PER_COUNT);
+        if (results.size() > HomeController.SYNC_PER_COUNT)
+            return results.subList(0, HomeController.SYNC_PER_COUNT);
         else
             return results.subList(0, results.size());
         //return new ArrayList<>(results);
     }
 
     public void removeAllDriverAdModel(long startId) {
-        long endId = startId + SyncService.SYNC_PER_COUNT;
+        long endId = startId + HomeController.SYNC_PER_COUNT;
         realm.beginTransaction();
         RealmResults<DriverAdModel> results = realm.where(DriverAdModel.class)
                 .between("id", startId, endId).findAll();

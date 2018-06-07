@@ -23,6 +23,7 @@ import ntamtech.adinz.database.DataBaseOperation;
 import ntamtech.adinz.interfaces.CompleteInterface;
 import ntamtech.adinz.model.AdModel;
 import ntamtech.adinz.utils.Constant;
+import ntamtech.adinz.utils.DownloadFiles;
 
 public class SyncActivity extends AppCompatActivity {
 
@@ -59,54 +60,14 @@ public class SyncActivity extends AppCompatActivity {
     }
 
     private void syncData(){
-        // get all ads from data base
-        DataBaseOperation baseOperation = new DataBaseOperation();
-        ads = baseOperation.getAllAds();
-        adsSize = ads.size();
-        downloadFile();
-    }
-
-    private void downloadFile() {
-        if(iteration >= adsSize) {
-            Toast.makeText(this, "Sync Finished", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this,HomeActivity.class));
-            finish();
-            return;
-        }
-        AdModel item = ads.get(iteration);
-        // get image file
-        String fileName = URLUtil.guessFileName(item.getAdUrl(), null, null);
-        // file path
-        String path;
-        // detect type
-        if(item.getTypeId() == Constant.IMAGE_AD){
-            path =  homeController.imagePath ;
-        }else if(item.getTypeId() == Constant.VIDEO_AD) {
-            path = homeController.videoPath;
-        }else {
-            iteration++;
-            downloadFile();
-            return;
-        }
-        File file = new File(path+fileName);
-        if(!file.exists()){
-            homeController.loadFile(item.getAdUrl(), path, new OnDownloadListener() {
-                @Override
-                public void onDownloadComplete() {
-                    iteration++;
-                    downloadFile();
-                }
-
-                @Override
-                public void onError(Error error) {
-                    iteration++;
-                    downloadFile();
-                }
-            });
-        }else {
-            // file exsited so i will search second file
-            iteration++;
-            downloadFile();
-        }
+        DownloadFiles files = new DownloadFiles(this);
+        files.getAdsAndDownloadFiles(new CompleteInterface() {
+            @Override
+            public void onComplete() {
+                Toast.makeText(SyncActivity.this, "Sync Finished", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(SyncActivity.this,HomeActivity.class));
+                finish();
+            }
+        });
     }
 }

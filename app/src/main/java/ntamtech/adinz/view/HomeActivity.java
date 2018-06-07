@@ -40,8 +40,8 @@ import ntamtech.adinz.model.AdModel;
 import ntamtech.adinz.model.DriverAdModel;
 import ntamtech.adinz.model.DriverModel;
 import ntamtech.adinz.model.ZoneModel;
-import ntamtech.adinz.service.SyncService;
 import ntamtech.adinz.utils.Constant;
+import ntamtech.adinz.utils.DownloadFiles;
 import ntamtech.adinz.utils.MyUtils;
 import ntamtech.adinz.utils.SharedPrefKey;
 
@@ -56,6 +56,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
     private int iteration = 0;
     private int driverId = 0;
     private boolean findLocation = false;
+
     // view
     private ImageView image, logo;
     private VideoView video;
@@ -70,17 +71,19 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         onClick();
         // check location permission
         getController().requestPermission();
-    /*
-            video.setVideoURI(Uri.parse(getController().videoPath+"test.mp4"));
-            video.start();*/
-        adModels = getAdsFromDB();
-        adsSize = adModels.size();
+        // get all ads from database
+        getAllAds();
+        // set driver id from shared pref
         driverId = SharedPrefManager.getObject(SharedPrefKey.USER, DriverModel.class).getId();
-        startService(new Intent(HomeActivity.this, SyncService.class));
-        //load();
+        waitToSync();
     }
 
-    private void load() {
+    private void getAllAds() {
+        adModels = getAdsFromDB();
+        adsSize = adModels.size();
+    }
+
+    /*private void load() {
         if(getDataBaseOperation().getDriverAdModelSize() < 2)
             return;
         final List<DriverAdModel> driverAdModels = dataBaseOperation.getAllDriverAdModelLimit();
@@ -89,7 +92,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
             driverAdRequests.add(new DriverAdRequest(item.getAdvertisementId(),item.getDriverId(),item.getLatitude(),
                     item.getLongitude(),item.getZonId(),item.getCreatedAt()));
         }
-        /*AdsViewRequest adsViewRequest = new AdsViewRequest(
+        *//*AdsViewRequest adsViewRequest = new AdsViewRequest(
                 MyUtils.getCurrentDateTime(),
                 driverAdRequests);
         ApiRequests.syncAds(adsViewRequest, new BaseResponseInterface<List<AdModel>>() {
@@ -103,8 +106,8 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
             public void onFailed(String errorMessage) {
 
             }
-        });*/
-    }
+        });*//*
+    }*/
 
     private void playAds() {
         if (iteration >= adsSize) {
@@ -113,9 +116,6 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         AdModel item = adModels.get(iteration);
         String fileName = URLUtil.guessFileName(item.getAdUrl(), null, null);
         if (item.getTypeId() == Constant.IMAGE_AD) {
-            // image ad
-                /*Bitmap myBitmap = BitmapFactory.decodeFile(new File(getController().imagePath + fileName).getAbsolutePath());
-                image.setImageBitmap(myBitmap);*/
             image.setImageURI(Uri.parse(getController().imagePath + fileName));
             video.setVisibility(View.GONE);
             image.setVisibility(View.VISIBLE);
@@ -170,7 +170,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onLocationChanged(Location location) {
         this.location = location;
-        if(!findLocation){
+        if (!findLocation) {
             playAds();
             findLocation = true;
         }
@@ -222,6 +222,63 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         List<AdModel> result = getDataBaseOperation().getAllAdsBetweenTwoIds(getController().startAdIndex, (getController().startAdIndex + getController().ADS_LIMIT_PER_SELECT));
         getController().startAdIndex = getController().startAdIndex + getController().ADS_LIMIT_PER_SELECT;
         return result;
+    }
+
+    private void waitToSync() {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (true) {
+                        Thread.sleep(5000);
+                        sync();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void sync() {
+        dataBaseOperation = new DataBaseOperation();
+        if (dataBaseOperation.getDriverAdModelSize() < HomeController.SYNC_PER_COUNT)
+            return;
+        final List<DriverAdModel> driverAdModels = dataBaseOperation.getAllDriverAdModelLimit();
+        List<DriverAdRequest> driverAdRequests = new ArrayList<>();
+        for (DriverAdModel item : driverAdModels) {
+            driverAdRequests.add(new DriverAdRequest(item.getAdvertisementId(), item.getDriverId(), item.getLatitude(),
+                    item.getLongitude(), item.getZonId(), item.getCreatedAt()));
+        }
+        AdsViewRequest adsViewRequest = new AdsViewRequest(
+                MyUtils.getCurrentDateTime(),
+                driverAdRequests);
+        ApiRequests.syncAds(adsViewRequest, new BaseResponseInterface<List<AdModel>>() {
+            @Override
+            public void onSuccess(List<AdModel> adModels) {
+                if (adModels.size() == 0)
+                    return;
+                // set new list of ads
+                dataBaseOperation.insertAdList(adModels);
+                // delete ads driver watched it
+                dataBaseOperation.removeAllDriverAdModel(driverAdModels.get(0).getId());
+                // download new files
+                DownloadFiles files = new DownloadFiles(HomeActivity.this);
+                files.getAdsAndDownloadFiles(new CompleteInterface() {
+                    @Override
+                    public void onComplete() {
+                        // update ads
+                        getAllAds();
+                    }
+                });
+            }
+
+            @Override
+            public void onFailed(String errorMessage) {
+
+            }
+        });
     }
 
 }

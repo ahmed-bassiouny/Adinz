@@ -37,6 +37,8 @@ public class HomeController {
     public String videoPath = appPath + "Video/";
     public final int ADS_LIMIT_PER_SELECT = 20;
     public int startAdIndex = 0;
+    public static final int SYNC_PER_COUNT = 2;
+
 
     public HomeController(Activity activity) {
         this.activity = activity;
