@@ -1,13 +1,18 @@
 package ntamtech.adinz.view;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -71,6 +76,8 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         onClick();
         // check location permission
         getController().requestPermission();
+        // open location
+        checkLocation();
         // get all ads from database
         getAllAds();
         // set driver id from shared pref
@@ -83,6 +90,30 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         adsSize = adModels.size();
     }
 
+    private void checkLocation() {
+        LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        boolean gps_enabled = false;
+
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {}
+
+        if(!gps_enabled) {
+            // notify user
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setMessage("Open GPS");
+            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    // TODO Auto-generated method stub
+                    Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(myIntent);
+                    //get gps
+                }
+            });
+            dialog.show();
+        }
+    }
     /*private void load() {
         if(getDataBaseOperation().getDriverAdModelSize() < 2)
             return;
@@ -135,7 +166,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
     private void viewAd(int adId) {
         // save ad in database
         // send later to web service
-        DriverAdModel driverAdModel = new DriverAdModel();
+        final DriverAdModel driverAdModel = new DriverAdModel();
         driverAdModel.setAdvertisementId(adId);
         driverAdModel.setCreatedAt(MyUtils.getCurrentDateTime());
         driverAdModel.setLatitude(location.getLatitude());
@@ -144,7 +175,12 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         // todo make zone id static till talk with aya
         driverAdModel.setZonId(1);
         // insert in database
-        getDataBaseOperation().insertDriverAdModel(driverAdModel);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getDataBaseOperation().insertDriverAdModel(driverAdModel);
+            }
+        });
     }
 
     private void stopAppForSeconds() {
@@ -232,7 +268,12 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
                 try {
                     while (true) {
                         Thread.sleep(5000);
-                        sync();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                sync();
+                            }
+                        });
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();

@@ -13,15 +13,12 @@ import ntamtech.adinz.model.ZoneModel;
 
 public class DataBaseOperation {
 
-    private Realm realm;
-
-    public DataBaseOperation() {
-        realm = Realm.getDefaultInstance();
-    }
 
     // save all of ads and zones in database
     public void insertZoneListAndAdList(AdDriverZoneModel adDriverZoneModel) {
-        realm.beginTransaction();
+        Realm realm = Realm.getDefaultInstance();
+        if(!realm.isInTransaction())
+            realm.beginTransaction();
         RealmResults<AdModel> rows = realm.where(AdModel.class).findAll();
         rows.deleteAllFromRealm();
         realm.insertOrUpdate(adDriverZoneModel.getZoneModels());
@@ -31,28 +28,28 @@ public class DataBaseOperation {
 
     // save all of ads and zones in database
     public void insertAdList(final List<AdModel> adModels) {
-        realm.executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.beginTransaction();
-                realm.insert(adModels);
-                realm.commitTransaction();
-                realm.close();
-            }
-        });
+        Realm realm = Realm.getDefaultInstance();
+        if(!realm.isInTransaction())
+            realm.beginTransaction();
+        realm.insertOrUpdate(adModels);
+        realm.commitTransaction();
+        realm.close();
     }
 
     public List<ZoneModel> getAllZone() {
+        Realm realm = Realm.getDefaultInstance();
         RealmResults<ZoneModel> results = realm.where(ZoneModel.class).findAll();
         return new ArrayList<>(results);
     }
 
     public List<AdModel> getAllAds() {
+        Realm realm = Realm.getDefaultInstance();
         RealmResults<AdModel> results = realm.where(AdModel.class).findAll();
         return new ArrayList<>(results);
     }
 
     public List<DriverAdModel> getAllDriverAdModelLimit() {
+        Realm realm = Realm.getDefaultInstance();
         RealmResults<DriverAdModel> results = realm.where(DriverAdModel.class).findAll();
         if (results.size() > HomeController.SYNC_PER_COUNT)
             return results.subList(0, HomeController.SYNC_PER_COUNT);
@@ -61,8 +58,10 @@ public class DataBaseOperation {
         //return new ArrayList<>(results);
     }
 
-    public void removeAllDriverAdModel(long startId) {
-        long endId = startId + HomeController.SYNC_PER_COUNT;
+    public void removeAllDriverAdModel(final long startId) {
+
+        Realm realm = Realm.getDefaultInstance();
+        final long endId = startId + HomeController.SYNC_PER_COUNT;
         realm.beginTransaction();
         RealmResults<DriverAdModel> results = realm.where(DriverAdModel.class)
                 .between("id", startId, endId).findAll();
@@ -71,12 +70,14 @@ public class DataBaseOperation {
     }
 
     public List<AdModel> getAllAdsBetweenTwoIds(long id1, long id2) {
+        Realm realm = Realm.getDefaultInstance();
         RealmResults<AdModel> results = realm.where(AdModel.class).between("id", id1, id2).findAll();
         return new ArrayList<>(results);
     }
 
     public void insertDriverAdModel(DriverAdModel driverAdModel) {
-        if (!realm.isInTransaction())
+        Realm realm = Realm.getDefaultInstance();
+        if(!realm.isInTransaction())
             realm.beginTransaction();
         Number number = realm.where(DriverAdModel.class).max("id");
         if (number != null){
@@ -89,6 +90,7 @@ public class DataBaseOperation {
     }
 
     public int getDriverAdModelSize() {
+        Realm realm = Realm.getDefaultInstance();
         return realm.where(DriverAdModel.class).findAll().size();
     }
 
