@@ -33,6 +33,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import bassiouny.ahmed.genericmanager.SharedPrefManager;
+import io.realm.Realm;
+import io.realm.RealmResults;
 import ntamtech.adinz.R;
 import ntamtech.adinz.api.ApiRequests;
 import ntamtech.adinz.api.apiModel.requests.AdsViewRequest;
@@ -146,6 +148,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         }
         AdModel item = adModels.get(iteration);
         String fileName = URLUtil.guessFileName(item.getAdUrl(), null, null);
+        Log.e( "play : ",fileName );
         if (item.getTypeId() == Constant.IMAGE_AD) {
             image.setImageURI(Uri.parse(getController().imagePath + fileName));
             video.setVisibility(View.GONE);
@@ -198,6 +201,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
                     });
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    iteration++;
                 }
             }
         }).start();
@@ -255,9 +259,12 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
 
     public List<AdModel> getAdsFromDB() {
         // get ads from data base with limit 20
-        List<AdModel> result = getDataBaseOperation().getAllAdsBetweenTwoIds(getController().startAdIndex, (getController().startAdIndex + getController().ADS_LIMIT_PER_SELECT));
-        getController().startAdIndex = getController().startAdIndex + getController().ADS_LIMIT_PER_SELECT;
-        return result;
+        /*List<AdModel> result = getDataBaseOperation().getAllAdsBetweenTwoIds(getController().startAdIndex, (getController().startAdIndex + getController().ADS_LIMIT_PER_SELECT));
+        getController().startAdIndex = getController().startAdIndex + result.size();
+        return result;*/
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<AdModel> results = realm.where(AdModel.class).findAll();
+        return new ArrayList<>(results);
     }
 
     private void waitToSync() {
