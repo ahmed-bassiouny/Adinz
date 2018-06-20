@@ -1,6 +1,7 @@
 package ntamtech.adinz.utils;
 
 import android.content.Context;
+import android.util.Log;
 import android.webkit.URLUtil;
 
 import com.downloader.Error;
@@ -65,7 +66,6 @@ public class DownloadFiles {
 
                 @Override
                 public void onError(Error error) {
-                    iteration++;
                     downloadFile(anInterface);
                 }
             });

@@ -148,14 +148,25 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         }
         AdModel item = adModels.get(iteration);
         String fileName = URLUtil.guessFileName(item.getAdUrl(), null, null);
-        Log.e( "play : ",fileName );
         if (item.getTypeId() == Constant.IMAGE_AD) {
+            // if file not exists
+            if(!new File(getController().imagePath + fileName).exists()){
+                iteration++;
+                playAds();
+                return;
+            }
             image.setImageURI(Uri.parse(getController().imagePath + fileName));
             video.setVisibility(View.GONE);
             image.setVisibility(View.VISIBLE);
             stopAppForSeconds();
         } else if (item.getTypeId() == Constant.VIDEO_AD) {
             // video ad
+            // if file not exists
+            if(!new File(getController().videoPath + fileName).exists()){
+                iteration++;
+                playAds();
+                return;
+            }
             video.setVideoURI(Uri.parse(getController().videoPath + fileName));
             video.setVisibility(View.VISIBLE);
             video.start();
