@@ -16,6 +16,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -63,6 +65,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
     private int iteration = 0;
     private int driverId = 0;
     private boolean findLocation = false;
+    private int countNumberOfAdToPlayMyAd = 0;
 
     // view
     private ImageView image, logo;
@@ -73,6 +76,9 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_home);
         initView();
         onClick();
@@ -107,7 +113,6 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
             dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    // TODO Auto-generated method stub
                     Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                     startActivity(myIntent);
                     //get gps
@@ -142,15 +147,45 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         });*//*
     }*/
 
-    private void playAds() {
+    private void playAdsOrNtamAd() {
         if (iteration >= adsSize) {
             iteration = 0;
         }
+        if(countNumberOfAdToPlayMyAd!= 0 && countNumberOfAdToPlayMyAd% 2 == 0 ) {
+            // show video ad about ntam
+            String path = "android.resource://" + getPackageName() + "/" + R.raw.ntamad;
+            video.setVideoURI(Uri.parse(path));
+            video.setVisibility(View.VISIBLE);
+            image.setVisibility(View.GONE);
+            video.start();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(getController().WAIT_TO_PLAY_NTAM_AD);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                playAds();
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }else {
+            playAds();
+        }
+
+    }
+
+    private void playAds(){
         AdModel item = adModels.get(iteration);
         String fileName = URLUtil.guessFileName(item.getAdUrl(), null, null);
         if (item.getTypeId() == Constant.IMAGE_AD) {
             // if file not exists
-            if(!new File(getController().imagePath + fileName).exists()){
+            if (!new File(getController().imagePath + fileName).exists()) {
                 iteration++;
                 playAds();
                 return;
@@ -158,11 +193,12 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
             image.setImageURI(Uri.parse(getController().imagePath + fileName));
             video.setVisibility(View.GONE);
             image.setVisibility(View.VISIBLE);
-            stopAppForSeconds();
+            countNumberOfAdToPlayMyAd++;
+            stopAppForSeconds(getController().WAIT_TO_AD_IMAGE);
         } else if (item.getTypeId() == Constant.VIDEO_AD) {
             // video ad
             // if file not exists
-            if(!new File(getController().videoPath + fileName).exists()){
+            if (!new File(getController().videoPath + fileName).exists()) {
                 iteration++;
                 playAds();
                 return;
@@ -171,11 +207,13 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
             video.setVisibility(View.VISIBLE);
             video.start();
             image.setVisibility(View.GONE);
-            stopAppForSeconds();
+            countNumberOfAdToPlayMyAd++;
+            stopAppForSeconds(getController().WAIT_TO_AD_VIDEO);
         }
         viewAd(item.getId());
-
     }
+
+
 
     private void viewAd(int adId) {
         // save ad in database
@@ -197,17 +235,17 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         });
     }
 
-    private void stopAppForSeconds() {
+    private void stopAppForSeconds(final int seconds) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(seconds);
                     iteration++;
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            playAds();
+                            playAdsOrNtamAd();
                         }
                     });
                 } catch (InterruptedException e) {
@@ -222,7 +260,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
     public void onLocationChanged(Location location) {
         this.location = location;
         if (!findLocation) {
-            playAds();
+            playAdsOrNtamAd();
             findLocation = true;
         }
     }

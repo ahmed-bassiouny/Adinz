@@ -38,6 +38,9 @@ public class HomeController {
     public final int ADS_LIMIT_PER_SELECT = 20;
     public int startAdIndex = 0;
     public static final int SYNC_PER_COUNT = 2;
+    public final int WAIT_TO_AD_IMAGE = 5000;
+    public final int WAIT_TO_AD_VIDEO = 35000;
+    public final int WAIT_TO_PLAY_NTAM_AD = 4500;
 
 
     public HomeController(Activity activity) {
